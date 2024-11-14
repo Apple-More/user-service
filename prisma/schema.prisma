@@ -19,6 +19,8 @@ model Admin {
   email       String   @unique @db.VarChar(255)
   password    String
   adminRole   Role     @default(Admin)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 enum Role {
@@ -33,6 +35,8 @@ model Customer {
   password      String
   phoneNumber   String      @db.VarChar(20)
   address       Address[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
 
 model Address {
@@ -44,4 +48,6 @@ model Address {
   zipCode       String   @db.VarChar(20)
   customerId    String
   customer      Customer @relation(fields: [customerId], references: [customerId], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
