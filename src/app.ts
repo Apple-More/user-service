@@ -2,6 +2,8 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 
+import router from './routes/index';
+
 const app = express();
 
 app.use(cors());
@@ -12,6 +14,8 @@ app.use(express.json());
 app.get('/health', (req: Request, res: Response) => {
   res.status(200).json({ status: 'UP' });
 });
+
+app.use('/v1', router);
 
 // 404 handler for unknown routes
 app.use((req: Request, res: Response) => {
