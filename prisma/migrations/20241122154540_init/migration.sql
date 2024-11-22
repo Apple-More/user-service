@@ -42,6 +42,17 @@ CREATE TABLE "Address" (
     CONSTRAINT "Address_pkey" PRIMARY KEY ("addressId")
 );
 
+-- CreateTable
+CREATE TABLE "Otp" (
+    "otpId" TEXT NOT NULL,
+    "otpCode" VARCHAR(6) NOT NULL,
+    "otpUserId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Otp_pkey" PRIMARY KEY ("otpId")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Admin_email_key" ON "Admin"("email");
 
