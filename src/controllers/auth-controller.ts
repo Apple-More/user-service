@@ -176,7 +176,7 @@ export const customerForgotPassword = async (
     const generatedOtpCode = Math.floor(1000 + Math.random() * 9000).toString();
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
 
-    const newOtp = await prisma.otp.create({
+    await prisma.otp.create({
       data: {
         otpCode: generatedOtpCode,
         otpUserId: user.customerId,
@@ -222,7 +222,7 @@ export const customerForgotPassword = async (
 
     res.status(200).json({
       status: true,
-      data: newOtp,
+      data: null,
       message: 'OTP sent successfully',
     });
   } catch (error: any) {
