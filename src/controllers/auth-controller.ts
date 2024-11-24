@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 
 import prisma from '../config/prisma';
 import { JWT_SECRET, JWT_EXPIRES_IN } from '../config/index';
-import { sendEmail } from '../utils';
+import { hashPassword, sendEmail } from '../utils';
 
 export const customerLogin = async (
   req: Request,
@@ -174,11 +174,13 @@ export const customerForgotPassword = async (
     }
 
     const generatedOtpCode = Math.floor(1000 + Math.random() * 9000).toString();
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
 
     const newOtp = await prisma.otp.create({
       data: {
         otpCode: generatedOtpCode,
         otpUserId: user.customerId,
+        expiresAt,
       },
     });
 
@@ -222,6 +224,135 @@ export const customerForgotPassword = async (
       status: true,
       data: newOtp,
       message: 'OTP sent successfully',
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      status: false,
+      data: null,
+      message: `An error occurred: ${error.message}`,
+    });
+  }
+};
+
+export const verifyCustomerOtp = async (req: Request, res: Response) => {
+  try {
+    const { email, otpCode } = req.body;
+    if (!email || !otpCode) {
+      res.status(400).json({
+        status: false,
+        data: null,
+        message: 'Missing required fields',
+      });
+      return;
+    }
+
+    const user = await prisma.customer.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (!user) {
+      res.status(404).json({
+        status: false,
+        data: null,
+        message: 'User not found',
+      });
+      return;
+    }
+
+    const otp = await prisma.otp.findFirst({
+      where: {
+        otpCode,
+        otpUserId: user.customerId,
+      },
+    });
+
+    if (!otp) {
+      res.status(401).json({
+        status: false,
+        data: null,
+        message: 'Invalid OTP code',
+      });
+      return;
+    }
+
+    const isOtpExpired = new Date() > otp.expiresAt;
+
+    if (isOtpExpired) {
+      res.status(401).json({
+        status: false,
+        data: null,
+        message: 'OTP code has expired',
+      });
+      return;
+    }
+
+    await prisma.otp.delete({
+      where: {
+        otpId: otp.otpId,
+      },
+    });
+
+    res.status(200).json({
+      status: true,
+      data: otp,
+      message: 'OTP verified successfully',
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      status: false,
+      data: null,
+      message: `An error occurred: ${error.message}`,
+    });
+  }
+};
+
+export const resetCustomerPassword = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      res.status(400).json({
+        status: false,
+        data: null,
+        message: 'Missing required fields',
+      });
+      return;
+    }
+
+    const user = await prisma.customer.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (!user) {
+      res.status(404).json({
+        status: false,
+        data: null,
+        message: 'User not found',
+      });
+      return;
+    }
+
+    const hashedPassword = await hashPassword(password);
+
+    await prisma.customer.update({
+      where: {
+        customerId: user.customerId,
+      },
+      data: {
+        password: hashedPassword,
+      },
+    });
+
+    res.status(200).json({
+      status: true,
+      data: null,
+      message: 'Password changed successfully',
     });
   } catch (error: any) {
     res.status(500).json({
