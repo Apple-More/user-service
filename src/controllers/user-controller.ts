@@ -153,7 +153,16 @@ export const createAddressByCustomerId = async (
 ): Promise<void> => {
   try {
     const customerId = req.params.customerId;
-    const { addressNo, addressLine1, addressLine2, city, zipCode } = req.body;
+    const {
+      addressNo,
+      addressLine1,
+      addressLine2,
+      city,
+      zipCode,
+      street,
+      province,
+      country,
+    } = req.body;
     const address = await prisma.address.create({
       data: {
         addressNo,
@@ -162,6 +171,9 @@ export const createAddressByCustomerId = async (
         city,
         zipCode,
         customerId,
+        street,
+        province,
+        country,
       },
     });
     res.status(201).json({
