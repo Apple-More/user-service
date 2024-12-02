@@ -42,7 +42,7 @@ model Customer {
 model Address {
   addressId     String   @id @default(uuid())
   addressNo     String   @db.VarChar(50)
-  street        String   @db.VarChar(255)
+  street        String?   @db.VarChar(255)
   province      String   @db.VarChar(100)
   country       String   @db.VarChar(100)
   addressLine1  String   @db.VarChar(255)
