@@ -19,7 +19,7 @@ import allowRoles from '../middlewares/allow-roles';
 
 const router = Router();
 
-router.post('/customers', createCustomer);
+router.post('/public/customers/register', createCustomer);
 router.get('/customers/:customerId', getCustomerById);
 router.patch('/customers/:customerId', updateCustomer);
 router.get('/customers/:customerId/address', getAllAddressByCustomerId);
