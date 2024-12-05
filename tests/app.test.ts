@@ -4,7 +4,7 @@ import app from '../src/app';
 
 describe('Health Check', () => {
   it('should return 200 and status UP on GET /health', async () => {
-    const res = await request(app).get('/health');
+    const res = await request(app).get('/public/health');
     expect(res.status).toBe(200);
     expect(res.body).toMatchObject({ status: 'User service is online' });
   });
