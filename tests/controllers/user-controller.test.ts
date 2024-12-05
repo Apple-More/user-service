@@ -940,4 +940,89 @@ describe('createSuperAdmin', () => {
     });
   });
 });
+
+
+// Test: updateSuperAdmin
+describe('updateSuperAdmin', () => {
+  it('should update a super admin successfully', async () => {
+    const adminId = '1';
+    const req = mockRequest(
+      { adminName: 'Updated Admin', email: 'updated@example.com' },
+      { adminId }
+    );
+    const res = mockResponse();
+
+    // Mock prisma.admin.update to return the updated super admin
+    prismaClient.admin.update.mockResolvedValue({
+      adminId: '1',
+      adminName: 'Updated Admin',
+      email: 'updated@example.com',
+    });
+
+    await updateSuperAdmin(req as Request, res as Response);
+
+    expect(prismaClient.admin.update).toHaveBeenCalledWith({
+      where: { adminId: '1' },
+      data: {
+        adminName: 'Updated Admin',
+        email: 'updated@example.com',
+      },
+    });
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      status: true,
+      data: expect.objectContaining({
+        adminName: 'Updated Admin',
+        email: 'updated@example.com',
+      }),
+      message: 'Super Admin updated successfully',
+    });
+  });
+
+  it('should return 500 if there is a database error', async () => {
+    const adminId = '1';
+    const req = mockRequest(
+      { adminName: 'Updated Admin', email: 'updated@example.com' },
+      { adminId }
+    );
+    const res = mockResponse();
+
+    // Force prisma.admin.update to throw an error
+    prismaClient.admin.update.mockRejectedValue(new Error('Database error'));
+
+    await updateSuperAdmin(req as Request, res as Response);
+
+    expect(prismaClient.admin.update).toHaveBeenCalledWith({
+      where: { adminId: '1' },
+      data: {
+        adminName: 'Updated Admin',
+        email: 'updated@example.com',
+      },
+    });
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      status: false,
+      data: null,
+      message: 'An error occurred: Database error',
+    });
+  });
+
+  it('should handle missing adminId gracefully', async () => {
+    const req = mockRequest(
+      { adminName: 'Updated Admin', email: 'updated@example.com' },
+      {}
+    );
+    const res = mockResponse();
+
+    await updateSuperAdmin(req as Request, res as Response);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      status: false,
+      data: null,
+      message: expect.stringContaining('An error occurred'),
+    });
+  });
+});
+
 });
