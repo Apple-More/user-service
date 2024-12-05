@@ -47,10 +47,10 @@ export const customerLogin = async (
 
     const payload = {
       user: {
-        customerId: customer.customerId,
-        customerName: customer.customerName,
+        userId: customer.customerId,
+        userName: customer.customerName,
+        userRole: 'Customer',
         email: customer.email,
-        phoneNumber: customer.phoneNumber,
       },
     };
 
@@ -115,10 +115,10 @@ export const adminLogin = async (
 
     const payload = {
       user: {
-        adminId: admin.adminId,
-        adminName: admin.adminName,
+        userId: admin.adminId,
+        userName: admin.adminName,
+        userRole: admin.adminRole,
         email: admin.email,
-        adminRole: admin.adminRole,
       },
     };
 
