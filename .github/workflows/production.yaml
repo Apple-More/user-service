@@ -38,6 +38,7 @@ jobs:
             --build-arg JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }} \
             --build-arg JWT_EXPIRES_IN=${{ secrets.JWT_EXPIRES_IN }} \
             --build-arg JWT_REFRESH_EXPIRES_IN=${{ secrets.JWT_REFRESH_EXPIRES_IN }} \
+            --build-arg API_GATEWAY_URL=${{ secrets.API_GATEWAY_URL }} \
             -t ${{ secrets.ACR_LOGIN_SERVER }}/user-service:latest .
 
       # Push the Docker image to Azure Container Registry
