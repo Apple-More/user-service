@@ -47,6 +47,7 @@ model Address {
   country       String   @db.VarChar(100)
   addressLine1  String   @db.VarChar(255)
   addressLine2  String?  @db.VarChar(255)
+  phoneNumber   String      @db.VarChar(20)
   city          String   @db.VarChar(100)
   zipCode       String   @db.VarChar(20)
   customerId    String

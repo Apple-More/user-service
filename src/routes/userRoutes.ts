@@ -15,10 +15,11 @@ import {
   createSuperAdmin,
   updateSuperAdmin,
 } from '../controllers/user-controller';
+import allowRoles from '../middlewares/allow-roles';
 
 const router = Router();
 
-router.get('/customers', getAllCustomers);
+router.route('/customers').get(allowRoles('Admin'), getAllCustomers);
 router.post('/customers', createCustomer);
 router.get('/customers/:customerId/address', getAllAddressByCustomerId);
 router.post('/customers/:customerId/address', createAddressByCustomerId);
@@ -27,7 +28,7 @@ router.patch('/customers/:customerId', updateCustomer);
 
 router.get('/admin', getAllAdmins);
 router.get('/admin/:adminId', getAdminById);
-router.post('/admin', createAdmin);
+router.post('/admin/register', createAdmin);
 router.patch('/admin/:adminId', updateAdmin);
 
 router.get('/super-admin', getAllSuperAdmins);
