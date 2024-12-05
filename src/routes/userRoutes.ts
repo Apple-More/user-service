@@ -19,21 +19,22 @@ import allowRoles from '../middlewares/allow-roles';
 
 const router = Router();
 
-router.route('/customers').get(allowRoles('Admin'), getAllCustomers);
 router.post('/customers', createCustomer);
-router.get('/customers/:customerId/address', getAllAddressByCustomerId);
-router.post('/customers/:customerId/address', createAddressByCustomerId);
 router.get('/customers/:customerId', getCustomerById);
 router.patch('/customers/:customerId', updateCustomer);
+router.get('/customers/:customerId/address', getAllAddressByCustomerId);
+router.post('/customers/:customerId/address', createAddressByCustomerId);
 
-router.get('/admin', getAllAdmins);
-router.get('/admin/:adminId', getAdminById);
-router.post('/admin/register', createAdmin);
-router.patch('/admin/:adminId', updateAdmin);
+router.route('/customers').get(allowRoles('Admin'), getAllCustomers);
 
-router.get('/super-admin', getAllSuperAdmins);
-router.get('/super-admin/:adminId', getSuperAdminById);
-router.post('/super-admin', createSuperAdmin);
-router.patch('/super-admin/:adminId', updateSuperAdmin);
+router.get('/admins', getAllAdmins);
+router.get('/admins/:adminId', getAdminById);
+router.post('/admins/register', createAdmin);
+router.patch('/admins/:adminId', updateAdmin);
+
+router.get('/super-admins', getAllSuperAdmins);
+router.get('/super-admins/:adminId', getSuperAdminById);
+router.post('/super-admins', createSuperAdmin);
+router.patch('/super-admins/:adminId', updateSuperAdmin);
 
 export default router;
