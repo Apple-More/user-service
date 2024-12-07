@@ -8,9 +8,11 @@ import {
   adminForgotPassword,
   resetAdminPassword,
 } from '../controllers/auth-controller';
+import { createCustomer } from '../controllers/user-controller';
 
 const router = Router();
 
+router.post('/customers/register', createCustomer);
 router.post('/customers/login', customerLogin);
 router.post('/customers/forgot-password', customerForgotPassword);
 router.post('/customers/reset-password', resetCustomerPassword);
